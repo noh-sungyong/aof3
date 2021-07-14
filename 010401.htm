@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script language="javascript" src="../common/js/plugin/jquery.js"></script>
+	<script language="javascript" src="../common/js/common.js"></script>
+	<style type="text/css">
+		#page {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 640px;
+			background-image: url("../common/img/summary/summary_bg.png");
+			text-align: left;
+			z-index: 3;
+		}
+		
+		.cssPageDownload{
+			position: absolute;
+			top: 430px;
+			left: 850px;
+			width: 140px;
+			height: 40px;
+			background: url("../common/img/summary/download_d.png")no-repeat;
+			cursor: pointer;
+			z-index: 5;
+		}
+		.cssPageDownload:hover {
+			background: url("../common/img/summary/download_u.png")no-repeat;
+		}
+		.cssPagePrint{
+			position: absolute;
+			top: 430px;
+			left: 720px;
+			width: 140px;
+			height: 40px;
+			background: url("../common/img/summary/print_d.png")no-repeat;
+			cursor: pointer;
+			z-index: 5;
+		}
+		.cssPagePrint:hover {
+			background: url("../common/img/summary/print_u.png")no-repeat;
+		}
+
+		.page_view_div {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 600px;
+			z-index: 4;
+		}
+
+		#summaryPageNum {
+			position: absolute;
+			width: 1000px;
+			left: 345px;
+			top: 510px;
+			z-index: 4;
+		}
+		
+		#summaryPageNum ul{
+			display: table;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		#summaryPageNum ul li {
+			float: left;
+		}
+		
+		.pageView .cP, .pageView .tP{
+			width: 30px;
+			height: 30px;
+		}
+		
+		.pageView .cP img {
+			cursor: pointer;
+		}
+
+		.pageView .cTxt {
+			font-size: 25px;
+			color: ##D67E0B; /* 빽넥 현재 화면번호 색 */
+			font-family: "NanumSquareEB";
+			width: 27px;
+			text-align:right;
+			line-height:30px; /*빽넥 이미지 높이와 동일하게*/
+			margin-left: 10px;
+		}
+
+		.pageView .dash {
+			font-size: 25px;
+			color: #333333; /* 빽넥 번호 중간선 색 */
+			font-family: "NanumSquareB";
+			width: 15px;
+			text-align:center;
+			line-height:30px; /*빽넥 이미지 높이와 동일하게*/
+		}
+
+		.pageView .tTxt {
+			font-size: 25px;
+			color: #333333; /* 빽넥 총 화면번호 색 */
+			font-family: "NanumSquareB";
+			width: 27px;
+			text-align:left;
+			line-height:30px; /*빽넥 이미지 높이와 동일하게*/
+			margin-right: 10px;
+		}
+
+		.pageView .tP img {
+			cursor: pointer
+		}
+	</style>
+	<script>
+
+		var summaryPage = 1;
+		var summaryPageMax = 7; /*정리하기 총 페이지수(이미지 개수)*/
+
+		$(document).ready(function () {
+			initSummaryBtn();
+			initSummary(summaryPage);
+			motionFlag = false;
+		});
+		
+		function reInitPage() {
+			log("reInitPage!!!!!!!!!!!");
+			//motionEvtFlag = false;
+		}
+
+		function initSummary(num) {
+			// for (var i = 1; i <= summaryPageMax; i++) {
+			// 	if (i != num) {
+			// 		$("#page" + i).hide();
+			// 	}
+			// }
+
+			if (summaryPageMax != 1) {
+
+				if (num == 1) {
+					$('.pageView .cP img').attr("src", "../common/img/summary/summary_prev_d.png");
+					$('.pageView .tP img').attr("src", "../common/img/summary/summary_next_d.png");
+					$('.pageView .cP img').hide();
+					$('.pageView .tP img').show();
+				} else if (num == summaryPageMax) {
+					$('.pageView .cP img').attr("src", "../common/img/summary/summary_prev_d.png");
+					$('.pageView .tP img').attr("src", "../common/img/summary/summary_next_d.png");
+					$('.pageView .cP img').show();
+					$('.pageView .tP img').hide();
+					motionEvtFlag = true;
+				} else {
+					$('.pageView .cP img').attr("src", "../common/img/summary/summary_prev_d.png");
+					$('.pageView .tP img').attr("src", "../common/img/summary/summary_next_d.png");
+					$('.pageView .cP img').show();
+					$('.pageView .tP img').show();
+				}
+
+
+			} else if (summaryPageMax == 1) {
+				$("#summaryPageNum").hide();
+				motionEvtFlag = true;
+			}
+
+			$(".pageView .cTxt").text(num);
+			$(".pageView .tTxt").text(summaryPageMax);
+
+			//$("#page" + num).show();
+			$('.page_view_div').css("background-image", "url(./img/summary_" + itostr(num) + ".png)");
+		}
+
+		function initSummaryBtn() {
+			$(".cssPageDownload").on("click", { "data": "download" }, handleSummaryEvt);
+			$(".cssPagePrint").on("click", { "data": "print" }, handleSummaryEvt);
+
+			$(".pageView .cP").on("click", { "data": "prev" }, handleSummaryMove);
+			$(".pageView .tP").on("click", { "data": "next" }, handleSummaryMove);
+
+
+
+			$(".pageView .tP").not(".on").each(function () {
+				$(this).hover(function () {
+					if ($(this).find("img").attr("src").indexOf("_o") < 0) {
+						$(this).find("img").attr("src", $(this).find("img").attr("src").replace("_d.png", "_u.png"));
+					}
+				}, function () {
+					if ($(this).find("img").attr("src").indexOf("_o") < 0) {
+						$(this).find("img").attr("src", $(this).find("img").attr("src").replace("_u.png", "_d.png"));
+					}
+				});
+			});
+
+
+			$(".pageView .cP").not(".on").each(function () {
+				$(this).hover(function () {
+					if ($(this).find("img").attr("src").indexOf("_o") < 0) {
+						$(this).find("img").attr("src", $(this).find("img").attr("src").replace("_d.png", "_u.png"));
+					}
+				}, function () {
+					if ($(this).find("img").attr("src").indexOf("_o") < 0) {
+						$(this).find("img").attr("src", $(this).find("img").attr("src").replace("_u.png", "_d.png"));
+					}
+				});
+			});
+		}
+
+		function handleSummaryEvt(e) {
+			var type = e.data.data;
+
+			if (type == "download") {
+				//download();
+				file_down();
+			} else if (type == "print") {
+				printThis();
+			}
+		}
+
+		function handleSummaryMove(e) {
+			var type = e.data.data;
+			//summaryPage
+			if (type == "prev") {
+				if (summaryPage > 1) {
+					summaryPage--;
+				}
+			} else if (type == "next") {
+				if (summaryPage < summaryPageMax) {
+					summaryPage++;
+				}
+			}
+
+			initSummary(summaryPage);
+		}
+		
+	</script>
+</head>
+
+<body style="overflow:hidden; text-align:left;" scroll="no">
+	<div id="content_inner">
+		<div id="wrapper">
+			<div id="header"></div>
+			<div id="container">
+				<div id="container_top"></div>
+				<div id="page">
+					<div class="cssPageDownload"></div>
+					<div class="cssPagePrint"></div>
+					<div class="page_view_div"></div>
+					<div id="summaryPageNum">
+						<ul class="pageView">
+							<li class="cP"><img></img></li>
+							<li class="cTxt">1</li>
+							<li class="dash">/</li>
+							<li class="tTxt">4</li>
+							<li class="tP"><img></img></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="footer"></div>
+		</div>
+	</div>
+	<div id="printArea"></div>
+</body>
+
+</html>
