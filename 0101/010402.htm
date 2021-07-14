@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script language="javascript" src="../common/js/plugin/jquery.js"></script>
+	<script language="javascript" src="../common/js/common.js"></script>
+	<style type="text/css">
+		.outrochasi {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 640px;
+			background-image: url("./img/outrochasi.png");
+			z-index: 6;
+		}
+		
+		.nextchasi {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 640px;
+			background-image: url("./img/nextchasi.png");
+			z-index: 6;
+		}
+		
+		.goodbye {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 640px;
+			background-image: url("./img/goodbye.png");
+			z-index: 6;
+		}
+
+		.tween {
+			display: none;
+		}		
+
+	</style>
+	
+	<script>
+		//startBtn
+
+		var tweenTimeArr = new Array();
+		tweenTimeArr[0] = [[1.5, 100]]; //시간 설정[등장 초, 사라짐 초]
+		tweenTimeArr[1] = [[3.5, 100]]; //시간 설정[등장 초, 사라짐 초]
+		tweenTimeArr[2] = [[5, 100]]; //시간 설정[등장 초, 사라짐 초]
+		
+		$(document).ready(function () {
+			setTweenTime();
+		});
+
+		function setTweenTime() {
+			var _interval = window.setInterval(function () {
+				if (Control.returnTime()) {					
+					var time = parseInt(Control.returnTime(), 10);
+					
+					if(time == 0){					
+						$('.outrochasi').css("display","none");
+						$('.nextchasi').css("display","none");
+						$('.goodbye').css("display","none");
+					}
+					
+					for (var i = 0; i < tweenTimeArr.length; i++) {
+						if (time >= tweenTimeArr[i][0][0] && time <= tweenTimeArr[i][0][1]) {
+							$('.tween').eq(i).fadeIn();
+						} else {
+							$('.tween').eq(i).fadeOut();
+						}
+					}
+				} else {
+
+				}
+			}, 200);
+		}
+	</script>
+  </head>
+  <body style="overflow:hidden" scroll="no">
+	<div id="content_inner">
+		<div id="wrapper">
+			<div id="header"></div>
+			<div id="container">
+				<div class="outrochasi tween"></div>
+				<div class="nextchasi tween"></div>
+				<div class="goodbye tween"></div>
+			</div>							
+			<div id="footer"></div>
+		</div>
+	</div>
+  </body>
+</html>

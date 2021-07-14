@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script language="javascript" src="../common/js/plugin/jquery.js"></script>
+	<script language="javascript" src="../common/js/common.js"></script>
+	<style type="text/css">
+		.skipBtn {
+			position: absolute;
+			width: 42px;
+			height: 42px;
+			background-image: url("../common/img/skip_d.png");
+			z-index: 7;
+			cursor: pointer;
+		}
+
+		.skipBtn:hover {
+			background-image: url("../common/img/skip_u.png");
+		}
+		
+		.startBtn {
+			position: absolute;
+			top: 540px;
+			left: 67px;
+			width: 135px;
+			height: 48px;
+			background-image: url("../common/img/start_d.png");
+			z-index: 7;
+			cursor: pointer;
+		}
+
+		.startBtn:hover {
+			background-image: url("../common/img/start_u.png");
+		}
+		
+		.introchasi {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 1000px;
+			height: 640px;
+			background-image: url("./img/introchasi.png");
+			z-index: 6;
+		}
+
+		.tween {
+			display: none;
+		}		
+
+	</style>
+
+	<script>
+		//startBtn
+
+		var tweenTimeArr = new Array();
+		tweenTimeArr[0] = [[100, 11]]; //스킵버튼 시간 설정[등장 초, 사라짐 초]
+		tweenTimeArr[1] = [[6, 100]]; //스타트버튼 시간 설정[등장 초, 사라짐 초]
+		tweenTimeArr[2] = [[3, 100]]; //인트로 차시명 시간 설정[등장 초, 사라짐 초]
+		
+		$(document).ready(function () {
+			setInitBtn();
+			setTweenTime();
+			mouseTracking();
+		});
+
+		function setTweenTime() {
+			var _interval = window.setInterval(function () {
+				if (Control.returnTime()) {
+					var time = parseInt(Control.returnTime(), 10);
+					
+					if(time == 0){			
+						$('.startBtn').css("display","none");
+						$('.introchasi').css("display","none");
+					}
+					
+					for (var i = 0; i < tweenTimeArr.length; i++) {
+						if (time >= tweenTimeArr[i][0][0] && time <= tweenTimeArr[i][0][1]) {
+							$('.tween').eq(i).fadeIn();
+						} else {
+							$('.tween').eq(i).fadeOut();
+						}
+					}
+				} else {
+
+				}
+			}, 200);
+		}
+
+		function setInitBtn() {
+			$('.skipBtn').on("click", { "data": "skip" }, handlePageBtn);
+			$('.startBtn').on("click", { "data": "start" }, handlePageBtn);
+		}
+
+		function handlePageBtn(e) {
+			var type = e.data.data;
+			if (type == "skip") {
+				/** 시간이동 **/
+				Control.setGoTime(12);
+			}else if (type == "start") {
+				/** 페이지 이동 **/
+				Control.movePage(2);
+			}
+		}
+		
+		function mouseTracking(){
+			//skip 버튼 화면 중앙 위치
+			screenW = $(window).width();
+			screenH = $(window).height();
+			var skipBtnTargetX = parseInt($('.skipBtn').css("width")) / 2;
+			var skipBtnTargetY = parseInt($('.skipBtn').css("height")) / 2;
+			$('.skipBtn').css("left", (screenW / 2) - skipBtnTargetX);
+			$('.skipBtn').css("top", (screenH / 2) - skipBtnTargetY);
+			
+			//skip 버튼 마우스 트래킹
+			$('.skipBtn').css("margin-left", -skipBtnTargetX);
+			$('.skipBtn').css("margin-top", -skipBtnTargetY);
+			var mouseX;
+			var mouseY;
+			
+			var accel = 0.05;
+			$(document).mousemove(function(e){
+				mouseX = e.pageX;
+				mouseY = e.pageY;
+			});
+			setInterval(checkCursor, 10);
+			function checkCursor(){
+				var skipBtn_X = $('.skipBtn').offset().left + skipBtnTargetX;
+				var skipBtn_Y = $('.skipBtn').offset().top + skipBtnTargetY;
+				var new_X = skipBtn_X + accel*(mouseX - skipBtn_X);
+				var new_Y = skipBtn_Y + accel*(mouseY - skipBtn_Y);
+				$('.skipBtn').css("left", new_X);
+				$('.skipBtn').css("top", new_Y);
+			}
+		}
+	</script>
+</head>
+
+<body style="overflow:hidden" scroll="no">
+	<div id="content_inner">
+		<div id="wrapper">
+			<div id="header"></div>
+			<div id="container">
+				<div class="skipBtn tween"></div>
+				<div class="startBtn tween"></div>
+				<div class="introchasi tween"></div>
+			</div>
+			<div id="footer"></div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script language="javascript" src="../common/js/plugin/jquery.js"></script>
+	<script language="javascript" src="../common/js/common.js"></script>
+	<script language="javascript" src="./js/quiz.js"></script>
+	<style type="text/css">
+		.cssPage2T img, .feedTxt img{
+			margin: 5px 0;
+		}
+		.cssPage2T .box{
+			margin: 5px 0;
+			padding: 10px;
+			background-color: rgba(255, 255, 255, 1);
+		}
+		.css3feedTxt {
+			color: #edbd7c; /* 피드백 텍스트 컬러 */
+		}
+		.hanja{
+			font-family: 'sans-serif';
+		}
+		.hanjaBogi{
+			font-family: 'sans-serif';
+			margin-left: -30px;
+		}
+	</style>
+	<script>
+	
+
+
+        var ans = new Array(2, 1, 3);          // 정답
+
+        var line = new Array(1, 1, 1);   // 문제 줄수 표시   
+        var pageInfo = new Array(4);
+        var isClear = false;
+        for (var i = 1; i <= 3; i++) {
+            pageInfo[i] = new Array();
+        }
+        /**
+        [0] 문제
+        [1] ~ [4] 보기 
+        [5] 피드백 텍스트 
+        **/
+
+
+        pageInfo[1][0] = "다음 설명은 인스타그램의 어떤 기능에 대한 설명인가?"+"<div style='margin:5px 0; padding:10px; background-color: rgba( 255, 255, 255, 0.7);'>인스타그램에서 사진/ 영상등을 올리는 기능을 의미한다. </div>";
+        pageInfo[1][1] = "홈";
+        pageInfo[1][2] = "업로드 ";
+        pageInfo[1][3] = "좋아요 ";
+        pageInfo[1][4] = "DM ";
+        pageInfo[1][5] = "업로드 기능에 대한 설명이다. ";
+
+        pageInfo[2] = new Array();
+        pageInfo[2][0] = "다음 설명은 인스타그램의 어떤 기능에 대한 설명인가?"+"<div style='margin:5px 0; padding:10px; background-color: rgba( 255, 255, 255, 0.7);'>인스타그램에서 내 팔로우의 게시물 스토리 라이브 등이 보이는 곳이다. </div>";
+        pageInfo[2][1] = "홈";
+        pageInfo[2][2] = "업로드 ";
+        pageInfo[2][3] = "좋아요 ";
+        pageInfo[2][4] = "DM ";
+        pageInfo[2][5] = "홈 부분에 대한 설명이다.";
+
+        pageInfo[3] = new Array();
+        pageInfo[3][0] = "다음 설명은 인스타그램의 어떤 기능에 대한 설명인가?"+"<div style='margin:5px 0; padding:10px; background-color: rgba( 255, 255, 255, 0.7);'>인스타그램에서 사진을 업로드 할 때 색상이나 분위기 등을 바꿀 수 있는 기능이다. 다양한 (&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp)으로 인스타그램 초기 사용자 확보에 굉장한 도움이 되었다. </div>";
+        pageInfo[3][1] = "홈";
+        pageInfo[3][2] = "업로드 ";
+        pageInfo[3][3] = "필터 ";
+        pageInfo[3][4] = "DM ";
+        pageInfo[3][5] = "사진을 업로드 하면서 사진의 색상 분위기 등을 변경하는 필터 기능은 인스타그램 초기 사용자 확보에 굉장히 큰 도움이 된 기능이다. ";
+
+
+
+
+		$(document).ready(function () {
+			writeEffectAudio();
+			startQuiz(ans, pageInfo, line);
+
+		});
+	</script>
+</head>
+
+<body style="overflow:hidden" scroll="no">
+	<div id="content_inner">
+		<div id="wrapper">
+			<div id="header"></div>
+			<div id="container">
+				<div id="page1">
+					<div class="cssPage1Btn"></div>
+				</div>
+
+				<div id="page2">
+					<!-- 문제 번호 및 문제 -->
+					<div class="cssPage2Quesition">
+						<ul>
+							<li class="cssPage2Q"></li>
+							<li class="cssPage2T"><div class="textMiddle"></div></li>
+						</ul>
+					</div>
+
+					<!-- 문제 보기 -->
+					<div class="quiz">
+						<div class="cssPage2Bogi1">
+							<ul>
+								<li class="bogi1">
+									<div id="bogiResult1"></div><em id="bogiImg-1"></em>
+									<p id="bogiCheck1"></p><span id="bogi-1"></span>
+								</li>
+								<li class="bogi2">
+									<div id="bogiResult2"></div><em id="bogiImg-2"></em>
+									<p id="bogiCheck2"></p><span id="bogi-2"></span>
+								</li>
+								<li class="bogi3">
+									<div id="bogiResult3"></div><em id="bogiImg-3"></em>
+									<p id="bogiCheck3"></p><span id="bogi-3"></span>
+								</li>
+								<li class="bogi4">
+									<div id="bogiResult4"></div><em id="bogiImg-4"></em>
+									<p id="bogiCheck4"></p><span id="bogi-4"></span>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- 정답 체크 -->
+					<div class="cssPage2Ox"></div>
+
+					<!-- 결과 화면 -->
+					<div class="cssPage2Feed">
+						<div class="feedAns"></div>
+						<!-- <div class="feedView"><span class="feedTxt"><span></div> -->
+						<div class="feedView"><textarea class="feedTxt" disabled></textarea></div>
+					</div>
+
+					<!-- 버튼들 -->
+					<div class="cssPage2Btn">
+						<ul>
+							<li class="btn1"></li><!-- 정답버튼 -->
+							<li class="btn2"></li><!-- 다음버튼 -->
+							<li class="btn3"></li><!-- 결과확인 -->
+							<!-- <li class="btn4"></li> --><!-- 관련학습보기 -->
+						</ul>
+					</div>
+
+					<div class="cssPage2Retry"></div>
+
+					<div class="cssPage2Check"></div>
+				</div>
+
+				<div id="page3">
+					<div class="cssPage3TxtView">
+						<ul>
+							<li class="css3Txt2"></li>
+						</ul>
+					</div>
+
+					<div class="cssPage3Btn"></div>
+					<div class="cssPage3OX">
+						<ul>
+							<li class="ox1"></li>
+							<li class="ox2"></li>
+							<li class="ox3"></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="footer"></div>
+		</div>
+	</div>
+</body>
+
+</html>
